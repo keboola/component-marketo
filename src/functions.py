@@ -1,6 +1,6 @@
 import csv
 import pandas as pd
-from marketorestpython.client import MarketoClient
+# from marketorestpython.client import MarketoClient
 import json
 import logging
 
@@ -292,7 +292,6 @@ def get_lead_changes(output_file,
 
     with open(output_file, mode='w', encoding='utf-8') as out_file:
 
-        keys = (unique_keys)
         fieldnames = ['leadId', 'activityDate', 'activityTypeId']
         results_trimmed = [0] * len(results)
         for i in range(len(results)):
