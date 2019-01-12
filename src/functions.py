@@ -1,8 +1,11 @@
 import csv
 import pandas as pd
+from keboola import docker
 # from marketorestpython.client import MarketoClient
 import json
 import logging
+
+cfg = docker.Config('/data/')
 
 logging.basicConfig(
     level=logging.INFO,
@@ -79,6 +82,8 @@ def extract_leads_by_ids(output_file, source_file, mc_object,
         dict_writer = csv.DictWriter(out_file, keys)
         dict_writer.writeheader()
         dict_writer.writerows(leads)
+
+    
 
 
 def extract_leads_by_filter(output_file,
@@ -456,3 +461,8 @@ def get_activity_types(output_file,
         dict_writer = csv.DictWriter(out_file, keys)
         dict_writer.writeheader()
         dict_writer.writerows(activity_types)
+
+    cfg.write_table_manifest(file_name=output_file,
+                                 destination='',
+                                 primary_key=['id'],
+                                 incremental=True)
