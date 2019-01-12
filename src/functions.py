@@ -83,8 +83,6 @@ def extract_leads_by_ids(output_file, source_file, mc_object,
         dict_writer.writeheader()
         dict_writer.writerows(leads)
 
-    
-
 
 def extract_leads_by_filter(output_file,
                             source_file,
@@ -463,6 +461,6 @@ def get_activity_types(output_file,
         dict_writer.writerows(activity_types)
 
     cfg.write_table_manifest(file_name=output_file,
-                                 destination='',
-                                 primary_key=['id'],
-                                 incremental=True)
+                             destination='',
+                             primary_key=['id'],
+                             incremental=True)
