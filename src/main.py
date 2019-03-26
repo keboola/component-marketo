@@ -49,7 +49,7 @@ dayspan = cfg.get_parameters()["dayspan"]
 desired_fields = [i.strip() for i in desired_fields_tmp.split(",")]
 logging.info("config successfuly read")
 
-logging.info("Desired fields: %s" % desired_fields)
+logging.info("Desired fields: %s" % str(desired_fields))
 logging.info("Since date: %s" % since_date)
 logging.info("Until date: %s" % until_date)
 logging.info("Filter column: %s" % filter_column)
