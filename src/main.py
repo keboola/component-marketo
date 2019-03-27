@@ -48,13 +48,14 @@ filter_field = cfg.get_parameters()["filter_field"]
 dayspan = cfg.get_parameters()["dayspan"]
 desired_fields = [i.strip() for i in desired_fields_tmp.split(",")]
 logging.info("config successfuly read")
+# logging.info(desired_fields)
 
-logging.info("Desired fields: %s" % str(desired_fields))
-logging.info("Since date: %s" % since_date)
-logging.info("Until date: %s" % until_date)
-logging.info("Filter column: %s" % filter_column)
-logging.info("Filter field: %s" % filter_field)
-logging.info("Dayspan: %s" % dayspan)
+logging.info(“Desired fields: %s” % str(desired_fields))
+logging.info(“Since date: %s” % since_date)
+logging.info(“Until date: %s” % until_date)
+logging.info(“Filter column: %s” % filter_column)
+logging.info(“Filter field: %s” % filter_field)
+logging.info(“Dayspan: %s” % dayspan)
 
 # Get proper list of tables
 in_tables = cfg.get_input_tables()

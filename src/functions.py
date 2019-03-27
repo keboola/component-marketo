@@ -1,8 +1,11 @@
 import csv
 import pandas as pd
-from marketorestpython.client import MarketoClient # NOQA
+from keboola import docker
+# from marketorestpython.client import MarketoClient
 import json
 import logging
+
+cfg = docker.Config('/data/')
 
 logging.basicConfig(
     level=logging.INFO,
@@ -80,6 +83,11 @@ def extract_leads_by_ids(output_file, source_file, mc_object,
         dict_writer.writeheader()
         dict_writer.writerows(leads)
 
+        cfg.write_table_manifest(file_name=output_file,
+                                 destination='',
+                                 primary_key=['id'],
+                                 incremental=True)
+
 
 def extract_leads_by_filter(output_file,
                             source_file,
@@ -124,6 +132,11 @@ def extract_leads_by_filter(output_file,
         dict_writer = csv.DictWriter(out_file, keys)
         dict_writer.writeheader()
         dict_writer.writerows(leads)
+
+        cfg.write_table_manifest(file_name=output_file,
+                                 destination='',
+                                 primary_key=['id'],
+                                 incremental=True)
 
 
 def get_companies(output_file,
@@ -171,6 +184,11 @@ def get_companies(output_file,
         dict_writer = csv.DictWriter(out_file, keys)
         dict_writer.writeheader()
         dict_writer.writerows(companies)
+
+        cfg.write_table_manifest(file_name=output_file,
+                                 destination='',
+                                 primary_key=['id'],
+                                 incremental=True)
 
 
 def get_lead_activities(output_file,
@@ -232,6 +250,11 @@ def get_lead_activities(output_file,
         dict_writer.writeheader()
         dict_writer.writerows(results)
 
+    cfg.write_table_manifest(file_name=output_file,
+                             destination='',
+                             primary_key=['id'],
+                             incremental=True)
+
 
 def get_lead_changes(output_file,
                      fields,
@@ -292,7 +315,6 @@ def get_lead_changes(output_file,
 
     with open(output_file, mode='w', encoding='utf-8') as out_file:
 
-        keys = (unique_keys) # NOQA
         fieldnames = ['leadId', 'activityDate', 'activityTypeId']
         results_trimmed = [0] * len(results)
         for i in range(len(results)):
@@ -302,6 +324,11 @@ def get_lead_changes(output_file,
         dict_writer = csv.DictWriter(out_file, fieldnames)
         dict_writer.writeheader()
         dict_writer.writerows(results_trimmed)
+
+    cfg.write_table_manifest(file_name=output_file,
+                             destination='',
+                             primary_key=['leadId'],
+                             incremental=True)
 
 
 def get_deleted_leads(output_file,
@@ -336,6 +363,11 @@ def get_deleted_leads(output_file,
         dict_writer = csv.DictWriter(out_file, keys)
         dict_writer.writeheader()
         dict_writer.writerows(results)
+
+    cfg.write_table_manifest(file_name=output_file,
+                             destination='',
+                             primary_key=['id'],
+                             incremental=True)
 
 
 def get_opportunities(output_file,
@@ -383,6 +415,11 @@ def get_opportunities(output_file,
         dict_writer.writeheader()
         dict_writer.writerows(leads)
 
+    cfg.write_table_manifest(file_name=output_file,
+                             destination='',
+                             primary_key=['id'],
+                             incremental=True)
+
 
 def get_campaigns(output_file,
                   mc_object,
@@ -421,6 +458,11 @@ def get_campaigns(output_file,
             dict_writer.writeheader()
             dict_writer.writerows(results)
 
+        cfg.write_table_manifest(file_name=output_file,
+                                 destination='',
+                                 primary_key=['id'],
+                                 incremental=True)
+
     except FileNotFoundError:
         results = mc_object.execute(method='get_multiple_campaigns')
         logging.info('No input file specified, extracting all campaigns.')
@@ -437,6 +479,11 @@ def get_campaigns(output_file,
             dict_writer = csv.DictWriter(out_file, keys)
             dict_writer.writeheader()
             dict_writer.writerows(results)
+
+        cfg.write_table_manifest(file_name=output_file,
+                                 destination='',
+                                 primary_key=['id'],
+                                 incremental=True)
 
 
 def get_activity_types(output_file,
@@ -457,3 +504,8 @@ def get_activity_types(output_file,
         dict_writer = csv.DictWriter(out_file, keys)
         dict_writer.writeheader()
         dict_writer.writerows(activity_types)
+
+    cfg.write_table_manifest(file_name=output_file,
+                             destination='',
+                             primary_key=['id'],
+                             incremental=True)
