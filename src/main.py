@@ -1,4 +1,5 @@
 import sys
+import os
 import logging
 from keboola import docker
 from marketorestpython.client import MarketoClient
@@ -34,7 +35,7 @@ logging_gelf_handler.setFormatter(
 logger.addHandler(logging_gelf_handler)
 
 # removes the initial stdout logging
-logger.removeHandler(logger.handlers[0])    
+logger.removeHandler(logger.handlers[0])
 
 
 COMPONENT_VERSION = '0.0.12'
