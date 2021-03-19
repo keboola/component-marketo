@@ -296,7 +296,7 @@ def get_lead_changes(output_file,
             pass
 
         try:
-            for l in range(len(i['fields'])):
+            for l in range(len(i['fields'])):  # noqa
                 i['name'] = i['fields'][l]['name']
                 i[("newValue_{}").format(i['name'])] = i['fields'][l]['newValue']
                 i['oldValue' + '_' + i['name']] = i['fields'][l]['oldValue']
