@@ -1,4 +1,4 @@
-# ex-marketo
+# Keboola Marketo Extractor
 
 Keboola Connection docker app for extracting data from specific endpoints of Marketo REST API. Available under `radim-kasparek.ex-marketo`
 

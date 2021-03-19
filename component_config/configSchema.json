@@ -1,99 +1,89 @@
 {
 	"type": "object",
-	"title": "extractor configuration",
+	"title": "Marketo Database",
 	"required": [
-		"project_id",
-		"#api_token",
-		"period_from",
-		"period_to",
-		"relative_period",
-		"metrics",
-		"backfill_mode"
+		"#munchkin_id",
+		"#client_id",
+		"#client_secret",
+		"method",
+		"since_date",
+		"until_date",
+		"filter_column",
+		"desired_fields",
+		"filter_field",
+		"dayspan"
 	],
 	"properties": {
-		"project_id": {
+		"#munchkin_id": {
 			"type": "string",
-			"title": "Project ID",
-			"propertyOrder": 100
-		},
-		"#api_token": {
-			"type": "string",
-			"title": "API token",
+			"title": "Munchkin ID token",
 			"format": "password",
-			"propertyOrder": 200
+			"description": "Can be found in Admin > Web Services menu in the REST API section",
+			"propertyOrder": 1
 		},
-		"period_from": {
+		"#client_id": {
 			"type": "string",
-			"format": "date",
-			"title": "Period from date [including]",
-			"propertyOrder": 300
+			"title": "Client ID token",
+			"format": "password",
+			"propertyOrder": 2
 		},
-		"period_to": {
+		"#client_secret": {
 			"type": "string",
-			"format": "date",
-			"title": "Period to date [excluding]",
-			"propertyOrder": 400
+			"title": "Client Secret token",
+			"format": "password",
+			"propertyOrder": 3
 		},
-		"relative_period": {
+		"desired_fields": {
 			"type": "string",
-			"title": "Relative period from now (utc)",
-			"description": "Relative period in format: '5 hours ago', 'yesterday','3 days ago', '4 months ago', '2 years ago', 'today'. Overrides `from` and `to` parameters.",
-			"propertyOrder": 450
+			"title": "Desired Fields",
+			"description": "Column names you want to extract. Relevant to some endpoints only.",
+			"propertyOrder": 4
 		},
-		"backfill_mode": {
-			"type": "number",
-			"title": "Backfill mode",
-			"description": "If backfill mode is enabled, each consecutive run of the component will continue from the end of the last run period, until current date is reached. The From and To date parameters are used to define Start date of the back-fill and also relative window of each run.",
-			"propertyOrder": 455,
+		"method": {
 			"enum": [
-				0,
-				1
+				"extract_leads_by_ids",
+				"extract_leads_by_filter",
+				"get_deleted_leads",
+				"get_lead_changes",
+				"get_lead_activities",
+				"get_companies",
+				"get_campaigns",
+				"get_activity_types"
 			],
-			"default": 0,
-			"options": {
-				"enum_titles": [
-					"No",
-					"Yes"
-				]
-			}
+			"type": "string",
+			"title": "Method",
+			"default": "extract_leads_by_ids",
+			"propertyOrder": 5
 		},
-		"metrics": {
-			"type": "array",
-			"items": {
-				"format": "grid",
-				"type": "object",
-				"title": "Metric",
-				"required": [
-					"metric",
-					"modificator"
-				],
-				"properties": {
-					"metric": {
-						"enum": [
-							"NoVt",
-							"TotTm",
-							"NoPV"
-						],
-						"type": "string",
-						"title": "Metric",
-						"description": "Report metric",
-						"propertyOrder": 1000
-					},
-					"modificator": {
-						"enum": [
-							"none",
-							"change"
-						],
-						"type": "string",
-						"title": "Mdificator",
-						"description": "Metric modificator",
-						"default": "daily",
-						"propertyOrder": 2000
-					}
-				}
-			},
-			"title": "Report metrics",
-			"description": "Choose metrics to download or leave empty to get all supported metrics."
+		"since_date": {
+			"type": "string",
+			"title": "Since Date (From)",
+			"description": "Format: YYYY-MM-DD",
+			"propertyOrder": 6
+		},
+		"until_date": {
+			"type": "string",
+			"title": "Until Date (To)",
+			"description": "Format: YYYY-MM-DD",
+			"propertyOrder": 7
+		},
+		"filter_column": {
+			"type": "string",
+			"title": "Column with Filter Values",
+			"description": "Denotes the column in the input file that contains the values you want to filter for. Relevant only for [extract_leads_by_filter] and [get_campaigns].",
+			"propertyOrder": 8
+		},
+		"filter_field": {
+			"type": "string",
+			"title": "Field to filter on",
+			"description": "The API fields you want to filter on.",
+			"propertyOrder": 9
+		},
+		"dayspan": {
+			"type": "string",
+			"title": "How many days back you want to go?",
+			"description": "Alternative to Since Date. The Until Date is automatically set to current date if this field is used.",
+			"propertyOrder": 10
 		}
 	}
 }

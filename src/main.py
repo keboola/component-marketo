@@ -1,10 +1,10 @@
-import functions as fces
-from datetime import datetime, timedelta
-from marketorestpython.client import MarketoClient
-from keboola import docker
-import logging
-import os
 import sys
+import os
+import logging
+from keboola import docker
+from marketorestpython.client import MarketoClient
+from datetime import datetime, timedelta
+import functions as fces
 "__author__ = 'Radim Kasparek kasrad'"
 "__credits__ = 'Keboola Drak"
 "__component__ = 'Marketo Extractor'"
@@ -14,11 +14,6 @@ Python 3 environment
 """
 
 
-# Environment setup
-abspath = os.path.abspath(__file__)
-script_path = os.path.dirname(abspath)
-os.chdir(script_path)
-
 sys.tracebacklimit = None
 
 # Logging
@@ -26,6 +21,16 @@ logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s',
     datefmt="%Y-%m-%d %H:%M:%S")
+
+COMPONENT_VERSION = '0.0.12'
+logging.info(f'kds-team.ex-marketo version: {COMPONENT_VERSION}')
+
+# Destination to fetch and output files and tables
+DEFAULT_TABLE_INPUT = "/data/in/tables/"
+DEFAULT_FILE_INPUT = "/data/in/files/"
+
+DEFAULT_FILE_DESTINATION = "/data/out/files/"
+DEFAULT_TABLE_DESTINATION = "/data/out/tables/"
 
 # Access the supplied rules
 cfg = docker.Config('/data/')
@@ -47,8 +52,6 @@ filter_column = cfg.get_parameters()["filter_column"]
 filter_field = cfg.get_parameters()["filter_field"]
 dayspan = cfg.get_parameters()["dayspan"]
 desired_fields = [i.strip() for i in desired_fields_tmp.split(",")]
-logging.info("config successfuly read")
-# logging.info(desired_fields)
 
 logging.info("Desired fields: %s" % str(desired_fields))
 logging.info("Since date: %s" % since_date)
@@ -62,38 +65,18 @@ in_tables = cfg.get_input_tables()
 out_tables = cfg.get_expected_output_tables()
 out_files = cfg.get_expected_output_files()
 logging.info("IN tables mapped: " + str(in_tables))
-# logging.info("IN files mapped: "+str(in_files))
-logging.info("OUT tables mapped: " + str(out_tables))
-logging.info("OUT files mapped: " + str(out_files))
 logging.info(filter_column)
 
-if len(in_tables) > 1:
-    logging.error("Please don't use more than one table as input table.")
-    sys.exit(1)
-else:
-    pass
-
-if since_date != '' and dayspan != '':
-    logging.error("Please add either since_date or dayspan, not both.")
-    sys.exit(1)
-elif since_date == '' and dayspan != '':
+# Preset data parameters if not specified
+if since_date == '' and dayspan != '':
     since_date = str((datetime.utcnow() - timedelta(days=int(dayspan)))
                      .date())
     until_date = str(datetime.utcnow().date())
-else:
-    pass
 
 if len(in_tables) == 0:
     in_tables = [{'destination': 'placeholder'}]
 else:
     pass
-
-# Destination to fetch and output files and tables
-DEFAULT_TABLE_INPUT = "/data/in/tables/"
-DEFAULT_FILE_INPUT = "/data/in/files/"
-
-DEFAULT_FILE_DESTINATION = "/data/out/files/"
-DEFAULT_TABLE_DESTINATION = "/data/out/tables/"
 
 
 # main
@@ -103,9 +86,8 @@ def main():
     """
     Main execution script.
     """
-    logging.info('starting the main')
     mc = MarketoClient(munchkin_id, client_id, client_secret)
-    logging.info('mc read')
+    logging.info('Reading Marketo')
     if method == 'extract_leads_by_ids':
         fces.extract_leads_by_ids(output_file=DEFAULT_TABLE_DESTINATION + 'leads_by_ids.csv',
                                   source_file=DEFAULT_TABLE_INPUT +
@@ -170,8 +152,33 @@ def main():
                                 mc_object=mc)
 
 
+def validate_user_parameters():
+    # 1 - Component cannot accepy more than one table as input table
+    if len(in_tables) > 1:
+        logging.error('Please do not use more than one table as input table.')
+        sys.exit(1)
+
+    # 2 - ensure there is a configuration
+    if params == {}:
+        logging.error(
+            'Empty configuration. Please configure your configuration.')
+        sys.exit(1)
+
+    # 3 - Ensure the reequired credentials are entered
+    if munchkin_id == '' or client_id == '' or client_secret == '':
+        logging.error(
+            'Credentials are missing: [Munchkin ID token], [Client ID Token], [Client Secret Token]')
+        sys.exit(1)
+
+    # 4 - Ensure input date parameters are valid
+    if since_date != '' and dayspan != '':
+        logging.error("Please add either since_date or dayspan, not both.")
+        sys.exit(1)
+
+
 if __name__ == "__main__":
 
+    validate_user_parameters()
     main()
 
-    logging.info("Done.")
+    logging.info("Component [kdsteam.ex-marketo] finished.")
