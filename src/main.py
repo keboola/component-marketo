@@ -1,5 +1,4 @@
 import sys
-import os
 import logging
 from keboola import docker
 from marketorestpython.client import MarketoClient
