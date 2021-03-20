@@ -1,4 +1,4 @@
-FROM quay.io/keboola/docker-custom-python:latest
+FROM python:3.7.2-slim
 ENV PYTHONIOENCODING utf-8
 
 COPY . /code/

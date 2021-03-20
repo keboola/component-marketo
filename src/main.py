@@ -24,7 +24,6 @@ logging.basicConfig(
     format='%(asctime)s - %(levelname)s - %(message)s',
     datefmt="%Y-%m-%d %H:%M:%S")
 
-
 logger = logging.getLogger()
 logging_gelf_handler = logging_gelf.handlers.GELFTCPSocketHandler(
     host=os.getenv('KBC_LOGGER_ADDR'),
@@ -36,6 +35,13 @@ logger.addHandler(logging_gelf_handler)
 
 # removes the initial stdout logging
 logger.removeHandler(logger.handlers[0])
+
+# Disabling list of libraries you want to output in the logger
+disable_libraries = [
+    'matplotlib'
+]
+for library in disable_libraries:
+    logging.getLogger(library).disabled = True
 
 
 COMPONENT_VERSION = '0.0.12'
@@ -52,6 +58,10 @@ DEFAULT_TABLE_DESTINATION = "/data/out/tables/"
 cfg = docker.Config('/data/')
 params = cfg.get_parameters()
 logging.info("params read")
+
+if params == {}:
+    logging.error('Empty configuration. Please configure your component.')
+    sys.exit(1)
 
 # enter Client ID from Admin > LaunchPoint > View Details
 # fill in Munchkin ID, typical format 000-AAA-000
@@ -84,7 +94,10 @@ logging.info("IN tables mapped: " + str(in_tables))
 logging.info(filter_column)
 
 # Preset data parameters if not specified
-if since_date == '' and dayspan != '':
+if since_date != '' and dayspan != '':
+    logging.error("Please add either since_date or dayspan, not both.")
+    sys.exit(1)
+elif since_date == '' and dayspan != '':
     since_date = str((datetime.utcnow() - timedelta(days=int(dayspan)))
                      .date())
     until_date = str(datetime.utcnow().date())
@@ -184,11 +197,6 @@ def validate_user_parameters():
     if munchkin_id == '' or client_id == '' or client_secret == '':
         logging.error(
             'Credentials are missing: [Munchkin ID token], [Client ID Token], [Client Secret Token]')
-        sys.exit(1)
-
-    # 4 - Ensure input date parameters are valid
-    if since_date != '' and dayspan != '':
-        logging.error("Please add either since_date or dayspan, not both.")
         sys.exit(1)
 
 
