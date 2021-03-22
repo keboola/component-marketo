@@ -2,6 +2,8 @@
 
 Keboola Connection docker app for extracting data from specific endpoints of Marketo REST API. Available under `radim-kasparek.ex-marketo`
 
+## API Limitations
+[Marketo API Limit](http://developers.marketo.com/rest-api/marketo-integration-best-practices/)
 
 ## Functionality
 This component allows KBC to get data from a few endpoints of the Marketo REST API (http://developers.marketo.com/rest-api/). 

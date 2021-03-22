@@ -45,7 +45,7 @@ for library in disable_libraries:
 
 
 COMPONENT_VERSION = '0.0.12'
-logging.info(f'kds-team.ex-marketo version: {COMPONENT_VERSION}')
+logging.info(f'[kds-team.ex-marketo] version: {COMPONENT_VERSION}')
 
 # Destination to fetch and output files and tables
 DEFAULT_TABLE_INPUT = "/data/in/tables/"
@@ -57,7 +57,6 @@ DEFAULT_TABLE_DESTINATION = "/data/out/tables/"
 # Access the supplied rules
 cfg = docker.Config('/data/')
 params = cfg.get_parameters()
-logging.info("params read")
 
 if params == {}:
     logging.error('Empty configuration. Please configure your component.')
@@ -79,12 +78,12 @@ filter_field = cfg.get_parameters()["filter_field"]
 dayspan = cfg.get_parameters()["dayspan"]
 desired_fields = [i.strip() for i in desired_fields_tmp.split(",")]
 
-logging.info("Desired fields: %s" % str(desired_fields))
-logging.info("Since date: %s" % since_date)
-logging.info("Until date: %s" % until_date)
-logging.info("Filter column: %s" % filter_column)
-logging.info("Filter field: %s" % filter_field)
-logging.info("Dayspan: %s" % dayspan)
+logging.info("Desired fields: %s" % str(desired_fields)) if desired_fields_tmp else ''
+logging.info("Since date: %s" % since_date) if since_date else ''
+logging.info("Until date: %s" % until_date) if until_date else ''
+logging.info("Filter column: %s" % filter_column) if filter_column else ''
+logging.info("Filter field: %s" % filter_field) if filter_field else ''
+logging.info("Dayspan: %s" % dayspan) if dayspan else dayspan
 
 # Get proper list of tables
 in_tables = cfg.get_input_tables()
