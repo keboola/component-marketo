@@ -36,7 +36,7 @@
 		"desired_fields": {
 			"type": "string",
 			"title": "Desired Fields",
-			"description": "Column names you want to extract. Relevant to some endpoints only.",
+			"description": "Comma seperated. Column names you want to extract. Relevant to some endpoints only.",
 			"propertyOrder": 4
 		},
 		"method": {
@@ -58,13 +58,13 @@
 		"since_date": {
 			"type": "string",
 			"title": "Since Date (From)",
-			"description": "Format: YYYY-MM-DD",
+			"description": "Start date for the extraction. Format: YYYY-MM-DD",
 			"propertyOrder": 6
 		},
 		"until_date": {
 			"type": "string",
 			"title": "Until Date (To)",
-			"description": "Format: YYYY-MM-DD",
+			"description": "End date for the extraction. Format: YYYY-MM-DD",
 			"propertyOrder": 7
 		},
 		"filter_column": {

@@ -44,8 +44,8 @@ for library in disable_libraries:
     logging.getLogger(library).disabled = True
 
 
-COMPONENT_VERSION = '0.0.12'
-logging.info(f'[kds-team.ex-marketo] version: {COMPONENT_VERSION}')
+COMPONENT_VERSION = '0.0.13'
+logging.info(f'Version: {COMPONENT_VERSION}')
 
 # Destination to fetch and output files and tables
 DEFAULT_TABLE_INPUT = "/data/in/tables/"
@@ -78,7 +78,8 @@ filter_field = cfg.get_parameters()["filter_field"]
 dayspan = cfg.get_parameters()["dayspan"]
 desired_fields = [i.strip() for i in desired_fields_tmp.split(",")]
 
-logging.info("Desired fields: %s" % str(desired_fields)) if desired_fields_tmp else ''
+logging.info("Desired fields: %s" %
+             str(desired_fields)) if desired_fields_tmp else ''
 logging.info("Since date: %s" % since_date) if since_date else ''
 logging.info("Until date: %s" % until_date) if until_date else ''
 logging.info("Filter column: %s" % filter_column) if filter_column else ''
@@ -100,11 +101,6 @@ elif since_date == '' and dayspan != '':
     since_date = str((datetime.utcnow() - timedelta(days=int(dayspan)))
                      .date())
     until_date = str(datetime.utcnow().date())
-
-if len(in_tables) == 0:
-    in_tables = [{'destination': 'placeholder'}]
-else:
-    pass
 
 
 # main
@@ -197,6 +193,35 @@ def validate_user_parameters():
         logging.error(
             'Credentials are missing: [Munchkin ID token], [Client ID Token], [Client Secret Token]')
         sys.exit(1)
+
+    # 4 - ensure the input table is available for some endpoints
+    endpoints_req = [
+        'extract_leads_by_ids',
+        'extract_leads_by_filter',
+        'get_lead_activities',
+        'get_companies'
+    ]
+    if method in endpoints_req and len(in_tables) == 0:
+        logging.error(
+            f'Input table is missing. Method [{method}] requies an input table.')
+        sys.exit(1)
+
+    # 5 - ensure the since_date is not larger than until date
+    if since_date != '' and until_date != '':
+        since_date_obj = datetime.strptime(since_date, '%Y-%m-%d')
+        until_date_obj = datetime.strptime(until_date, '%Y-%m-%d')
+
+        if until_date_obj < since_date_obj:
+            logging.error('[From] date cannot exceed [To] date. Please validate your parameters.')
+            sys.exit(1)
+
+    # 6 - ensure startdate is not larger than today
+    if since_date != '':
+        since_date_obj = datetime.strptime(since_date, '%Y-%m-%d')
+
+        if datetime.now() < since_date_obj:
+            logging.error('[From] date is larger than today.')
+            sys.exit(1)
 
 
 if __name__ == "__main__":
