@@ -5,7 +5,7 @@ COPY . /code/
 
 RUN pip install flake8
 RUN pip install  --upgrade --no-cache-dir --ignore-installed logging_gelf
-RUN pip install  --upgrade --no-cache-dir --ignore-installed marketorestpython
+RUN pip install  --upgrade --no-cache-dir --ignore-installed marketorestpython==0.5.25
 
 RUN pip install -r /code/requirements.txt
 
