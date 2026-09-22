@@ -1,2 +1,3 @@
 # ignore test data
 /data
+__pycache__/
